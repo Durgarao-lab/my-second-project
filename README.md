@@ -40,5 +40,19 @@ A full-stack Mechanic Service Booking Web Application built using Flask (Python)
 - Push notifications
 - Convert to mobile app
 
-# install
-pip install requirements.txt
+# How to run
+- python app.py
+
+# Install
+pip install -r requirements.txt
+
+# Install Manually
+- pip install flask
+- pip install Flask-Mail
+- pip install SQL
+- pip install flask_sqlalchemy
+- pip install werkzeg
+
+# Author
+- Yalamarthi Durgarao
+- B.Tech CSE Student
