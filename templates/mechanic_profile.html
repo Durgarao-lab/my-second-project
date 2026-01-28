@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mechanic Profile</title>
+  <style>
+    body { font-family: Arial; background: #eef2f3; padding: 40px; }
+    .card { width: 400px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; }
+    button { width: 100%; padding: 12px; background:#1f4037; color:white; border:none; border-radius:8px; cursor:pointer; }
+    button:hover{ background:#16332c; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Mechanic Profile</h2>
+  <form action="/mechanic/profile/{{ mechanic.id }}" method="POST">
+    <label>Name</label>
+    <input type="text" name="name" value="{{ mechanic.name }}">
+
+    <label>Email</label>
+    <input type="email" name="email" value="{{ mechanic.email }}">
+
+    <label>Phone</label>
+    <input type="text" name="phone" value="{{ mechanic.phone }}">
+
+    <label>Password</label>
+    <input type="password" name="password" value="{{ mechanic.password }}">
+
+    <button type="submit">Save Changes</button>
+  </form>
+</div>
+
+</body>
+</html>

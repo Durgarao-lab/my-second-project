@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mechanic Dashboard</title>
+  <style>
+    body { margin: 0; background: #f4f6f8; font-family: Arial, sans-serif; }
+
+    .header {
+      background: #1f4037;
+      padding: 18px;
+      color: white;
+      font-size: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logout {
+      background: transparent;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 2px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: underline;
+      border: none;
+      font-size: 16px;
+    }
+
+    .main-box { padding: 30px; }
+
+    .rating-box {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
+      font-size: 18px;
+      color: #1f4037;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      text-align: left;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .card:hover { transform: translateY(-3px); }
+
+    .card h3 { margin: 0 0 10px; color: #1f4037; }
+
+    .status-box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-top: 20px;
+    }
+
+    .btn {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      font-size: 15px;
+      color: white;
+      width: 180px;
+    }
+
+    .online { background: green; }
+    .offline { background: red; }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <span>Welcome, {{ mechanic.name }}</span>
+    <a href="/mechanic_login"><button class="logout">Logout</button></a>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-box">
+
+    <!-- ⭐ RATING DISPLAY -->
+    <div class="rating-box">
+      ⭐ <strong>Average Rating:</strong> {{ rating }}/5
+    </div>
+
+    <!-- TOP CARDS -->
+    <div class="cards">
+
+      <div class="card" onclick="window.location.href='/mechanic/requests/{{ mechanic.id }}'">
+        <h3>New Service Requests</h3>
+        <p>View & accept customer booking requests.</p>
+      </div>
+
+      <div class="card" onclick="window.location.href='/mechanic/jobs/{{ mechanic.id }}'">
+        <h3>My Jobs</h3>
+        <p>Track ongoing & completed work.</p>
+      </div>
+
+      <div class="card" onclick="window.location.href='/mechanic/earnings/{{ mechanic.id }}'">
+        <h3>Earnings</h3>
+        <p>View weekly & monthly earnings.</p>
+      </div>
+    </div>
+
+    <a href="/mechanic/profile/{{ mechanic.id }}">
+      <button class="btn" style="background:#1425a5ff;">Profile</button>
+    </a>
+
+    <!-- STATUS -->
+    <div class="status-box">
+      <h3>Availability Status</h3>
+      <p>You are currently:
+        <strong id="statusText" style="color:{{ 'green' if mechanic.is_online else 'red' }}">
+          {{ "ONLINE" if mechanic.is_online else "OFFLINE" }}
+        </strong>
+      </p>
+
+      {% if mechanic.is_online %}
+      <button id="statusBtn" class="btn offline" onclick="toggleStatus('offline')">Go Offline</button>
+      {% else %}
+      <button id="statusBtn" class="btn online" onclick="toggleStatus('online')">Go Online</button>
+      {% endif %}
+    </div>
+
+  </div>
+
+<script>
+  const mechanicID = {{ mechanic.id }};
+
+  function toggleStatus(state) {
+    if (state === "online") {
+      navigator.geolocation.getCurrentPosition(pos => {
+        fetch("/mechanic/location", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: mechanicID, lat: pos.coords.latitude, lng: pos.coords.longitude })
+        })
+        .then(() => updateUI(true));
+      });
+    } else {
+      fetch(`/mechanic/set_status/${mechanicID}/offline`)
+      .then(() => updateUI(false));
+    }
+  }
+
+  function updateUI(isOnline) {
+    const text = document.getElementById("statusText");
+    const btn = document.getElementById("statusBtn");
+
+    if (isOnline) {
+      text.innerText = "ONLINE";
+      text.style.color = "green";
+      btn.innerText = "Go Offline";
+      btn.classList.remove("online");
+      btn.classList.add("offline");
+      btn.setAttribute("onclick", "toggleStatus('offline')");
+      alert("You are now ONLINE 🚗");
+    } else {
+      text.innerText = "OFFLINE";
+      text.style.color = "red";
+      btn.innerText = "Go Online";
+      btn.classList.remove("offline");
+      btn.classList.add("online");
+      btn.setAttribute("onclick", "toggleStatus('online')");
+      alert("You are now OFFLINE ❌");
+    }
+  }
+</script>
+
+</body>
+</html>

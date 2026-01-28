@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Earnings – Mechanic</title>
+<style>
+body{font-family:Arial;background:#f4f6f8;margin:0;padding:25px;}
+.card{background:white;padding:22px;border-radius:12px;width:350px;box-shadow:0 4px 10px rgba(0,0,0,.1);}
+h2{margin:0 0 15px;color:#1f4037;}
+table{width:100%;background:white;margin-top:20px;border-collapse:collapse;}
+th,td{padding:10px;border:1px solid #ddd;text-align:center;}
+</style>
+</head>
+<body>
+
+<div class="card">
+<h2>Total Earnings</h2>
+<h1>₹{{ total }}</h1>
+</div><br>
+
+<a class="back-btn" href="/mechanic_dashboard">⬅ Back</a><br><br>  
+
+<h3>Completed Jobs History</h3>
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Booking ID</th>
+        <th>Service</th>
+        <th>Price</th>
+    </tr>
+    {% for j in jobs %}
+    <tr>
+        <td>{{ j.id }}</td>
+        <td>{{ j.service }}</td>
+        <td>₹{{ j.price }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>Total Earnings: ₹{{ total }}</h3>
+
+</body>
+</html>

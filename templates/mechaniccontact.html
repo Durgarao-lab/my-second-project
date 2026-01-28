@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mechanic Contact</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #043df8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .contact-box {
+      background: rgb(36, 187, 232);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 350px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+
+    a.phone-link {
+      display: inline-block;
+      margin-top: 10px;
+      background: #1cbfe3;
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      transition: background 0.3s ease;
+    }
+
+    a.phone-link:hover {
+      background: #5177cb;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="contact-box">
+    <h2>Mechanic Contact Info</h2>
+    <p id="mechanicName"></p>
+    <p id="mechanicPhone"></p>
+    <a id="callLink" class="phone-link" href="">Call Now</a>
+  </div>
+
+  <script>
+    const service = localStorage.getItem("selectedService");
+
+    const contacts = {
+      "Routine Maintenance & Inspection": {name: "Mahesh", phone: "9949935587"},
+      "Breakdown Assistance": {name: "Neeraj", phone: "9290836248"},
+      "Engine Repair": {name: "Ravi", phone: "6309280786"},
+      "Electrical Repair": {name: "Kasi", phone: "9895125994"},
+      "Periodic Maintenance": {name: "Kalyan", phone: "7875325621"},
+      "Oil Change": {name: "Ram", phone: "8332465180"},
+      "Chain Repair": {name: "Prasad", phone: "8332058924"}
+    };
+
+    if(service && contacts[service]){
+      const mech = contacts[service];
+      document.getElementById("mechanicName").innerText = "Name: " + mech.name;
+      document.getElementById("mechanicPhone").innerText = "Phone: " + mech.phone;
+      document.getElementById("callLink").href = "tel:" + mech.phone;
+    } else {
+      document.getElementById("mechanicName").innerText = "No mechanic assigned";
+      document.getElementById("mechanicPhone").innerText = "";
+      document.getElementById("callLink").style.display = "none";
+    }
+  </script>
+</body>
+</html>

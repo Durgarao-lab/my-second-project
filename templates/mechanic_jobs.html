@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Jobs</title>
+<style>
+body{font-family:Arial;background:#f4f6f8;margin:0;padding:25px;}
+table{width:100%;background:white;border-collapse:collapse;}
+th,td{padding:12px;border:1px solid #ddd;text-align:center;}
+.head{font-size:24px;margin-bottom:20px;}
+.btn{padding:6px 10px;border:none;border-radius:5px;color:white;cursor:pointer;}
+.accept{background:green;}
+.done{background:blue;}
+</style>
+</head>
+<body>
+
+<div class="head">My Jobs – {{ mechanic.name }}</div>
+<br>
+<a class="back-btn" href="/mechanic_dashboard">⬅ Back</a><br><br>
+
+<table>
+<tr>
+<th>Booking ID</th><th>Service</th><th>Price</th><th>Status</th><th>Action</th>
+</tr>
+
+{% for j in jobs %}
+<tr>
+<td>{{ j.id }}</td>
+<td>{{ j.service }}</td>
+<td>₹{{ j.price }}</td>
+<td>{{ j.status }}</td>
+<td>
+{% if j.status == "Pending" %}
+  <a href="{{ url_for('accept_booking', bid=j.id, mid=mechanic.id) }}">Accept</a>
+  <a href="{{ url_for('reject_booking', bid=j.id, mid=mechanic.id) }}">Reject</a>
+{% elif j.status == "Accepted" %}
+  <a href="/mechanic/job/complete/{{ j.id }}"><button class="btn done">Mark Done</button></a>
+{% else %}
+✔ Completed
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+</table>
+
+</body>
+</html>

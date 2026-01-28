@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Bookings</title>
+
+  <style>
+    body{
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #eef2f3;
+      color:#222;
+    }
+
+    .container{
+      max-width: 1050px;
+      margin: 35px auto;
+      padding: 18px;
+    }
+
+    /* Header */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom: 16px;
+    }
+
+    .title{
+      font-size: 28px;
+      font-weight: 800;
+      color: #1f4037;
+      letter-spacing: 0.2px;
+    }
+
+    .btn{
+      border: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor:pointer;
+      font-weight:700;
+      font-size:14px;
+      transition:0.2s;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .btn:hover{ transform: translateY(-1px); }
+
+    .btn-dashboard{
+      background:#1f4037;
+      color:white;
+      box-shadow:0 6px 16px rgba(31,64,55,0.22);
+    }
+
+    /* Filter/Search Panel */
+    .panel{
+      background:white;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+      padding: 14px;
+      margin-bottom: 18px;
+    }
+
+    .filters{
+      display:grid;
+      grid-template-columns: 1.7fr 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    input, select{
+      width:100%;
+      padding:10px 12px;
+      border-radius: 10px;
+      border:1px solid #d5d9dd;
+      outline:none;
+      font-size: 14px;
+      background:#fff;
+    }
+
+    .filters .hint{
+      font-size:12px;
+      color:#666;
+      margin-top:6px;
+    }
+
+    .chip{
+      display:inline-block;
+      background:#eef7f4;
+      color:#1f4037;
+      border:1px solid #cfe5dc;
+      font-weight:700;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:12px;
+    }
+
+    /* Booking list */
+    .booking-list{
+      list-style:none;
+      padding:0;
+      margin:0;
+      display:grid;
+      gap:14px;
+    }
+
+    .booking-card{
+      background:white;
+      padding: 16px 18px;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+      display:grid;
+      grid-template-columns: 1.8fr 1fr;
+      gap:14px;
+      border-left: 6px solid #1f4037;
+    }
+
+    .left{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 14px;
+      align-items:center;
+      font-size:14px;
+    }
+
+    .label{
+      font-weight:800;
+      color:#1f4037;
+    }
+
+    .price-box{
+      font-size: 22px;
+      font-weight: 900;
+      color:#0b3a27;
+      text-align:right;
+    }
+
+    .right{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:flex-end;
+      justify-content:space-between;
+    }
+
+    .status{
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      width: fit-content;
+      border:1px solid transparent;
+    }
+
+    .Pending{
+      background: #fff3cd;
+      color: #856404;
+      border-color: #ffeeba;
+    }
+
+    .Approved, .Accepted{
+      background: #d4edda;
+      color: #155724;
+      border-color: #c3e6cb;
+    }
+
+    .Rejected, .Cancelled{
+      background: #f8d7da;
+      color: #721c24;
+      border-color: #f5c6cb;
+    }
+
+    .btn-cancel{
+      background:#dc3545;
+      color:white;
+      box-shadow:0 8px 18px rgba(220,53,69,0.18);
+    }
+
+    .btn-cancel:disabled{
+      opacity:0.5;
+      cursor:not-allowed;
+      transform:none;
+      box-shadow:none;
+    }
+
+    .meta{
+      color:#666;
+      font-size:13px;
+    }
+
+    .empty-box{
+      background:white;
+      padding: 26px;
+      text-align:center;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+      color:#555;
+    }
+
+    .small{
+      font-size:12px;
+      color:#666;
+    }
+
+    @media(max-width: 860px){
+      .filters{
+        grid-template-columns: 1fr 1fr;
+      }
+      .booking-card{
+        grid-template-columns: 1fr;
+      }
+      .right{
+        align-items:flex-start;
+      }
+      .price-box{
+        text-align:left;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="title">Your Bookings</div>
+
+     <!-- ✅ CLEAR HISTORY BUTTON -->
+     <form action="/clear_booking_history" method="POST" style="margin:0;">
+        <button type="submit"
+                style="background:#d9534f; color:white; padding:10px 16px; border:none;
+                       border-radius:8px; font-weight:bold; cursor:pointer;">
+            🗑 Clear History
+        </button>
+     </form>
+
+      <!-- ✅ Back to Dashboard button -->
+     <a class="btn btn-dashboard" href="/customer/dashboard/{{ session.get('cid') }}">
+     ← Back to Dashboard
+     </a>
+    </div>
+
+    <!-- ✅ Search / Filter Panel -->
+    <div class="panel">
+      <div class="filters">
+        <div>
+          <input id="searchInput" type="text" placeholder="Search service or mechanic name..." />
+          <div class="hint">Example: Bike Wash / Raj / 9876</div>
+        </div>
+
+        <div>
+          <select id="statusFilter">
+            <option value="">All Status</option>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Accepted">Accepted</option>
+            <option value="Rejected">Rejected</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+          <div class="hint">Filter by booking status</div>
+        </div>
+
+        <div>
+          <select id="serviceFilter">
+            <option value="">All Services</option>
+            <option value="Chain Lubrication">Chain Lubrication</option>
+            <option value="Puncture Fix">Puncture Fix</option>
+            <option value="Engine Oil Change">Engine Oil Change</option>
+            <option value="Bike Wash">Bike Wash</option>
+            <option value="Full Service">Full Service</option>
+          </select>
+          <div class="hint">Filter by service</div>
+        </div>
+
+        <div>
+          <select id="sortFilter">
+            <option value="newest">Sort: Newest</option>
+            <option value="oldest">Sort: Oldest</option>
+            <option value="price_high">Price: High → Low</option>
+            <option value="price_low">Price: Low → High</option>
+          </select>
+          <div class="hint">Sort bookings</div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <span class="chip">Tip: You can search by phone number too</span>
+        <span class="small" id="countText"></span>
+      </div>
+    </div>
+
+    {% if bookings %}
+      <ul class="booking-list" id="bookingList">
+
+        {% for b in bookings %}
+          <!--
+            ✅ Data attributes used for filtering/search
+            NOTE: This expects mechanic details to be available.
+          -->
+          <li class="booking-card bookingItem"
+              data-service="{{ b.service }}"
+              data-status="{{ b.status }}"
+              data-price="{{ b.price }}"
+              data-text="{{ (b.service ~ ' ' ~ b.status ~ ' ' ~ b.date ~ ' ' ~ b.mechanic.name ~ ' ' ~ b.mechanic.phone).lower() if b.mechanic else (b.service ~ ' ' ~ b.status ~ ' ' ~ b.date).lower() }}">
+
+            <div class="left">
+              <div class="row">
+                <span class="label">Service:</span> <span>{{ b.service }}</span>
+                <span class="status {{ b.status }}">{{ b.status }}</span>
+              </div>
+
+              <!-- ✅ Mechanic name + phone -->
+              <div class="row">
+                <span class="label">Mechanic:</span>
+                <span>
+                  {% if b.mechanic %}
+                    {{ b.mechanic.name }}
+                    <span class="meta">(📞 {{ b.mechanic.phone }})</span>
+                  {% else %}
+                    <span class="meta">Not Available</span>
+                  {% endif %}
+                </span>
+              </div>
+
+              <div class="row">
+                <span class="label">Date:</span> <span>{{ b.date }}</span>
+              </div>
+
+              <div class="row">
+                <span class="label">Booking ID:</span> <span class="meta">#{{ b.id }}</span>
+              </div>
+            </div>
+
+            <div class="right">
+              <div class="price-box">₹{{ b.price }}</div>
+
+              <!-- ✅ Cancel button -->
+              <form method="POST" action="/cancel_booking/{{ b.id }}" onsubmit="return confirm('Cancel this booking?');">
+                {% if b.status == "Pending" %}
+                  <button class="btn btn-cancel" type="submit">Cancel Booking</button>
+                {% else %}
+                  <button class="btn btn-cancel" type="button" disabled>Cancel Booking</button>
+                {% endif %}
+              </form>
+
+              <div class="small">
+                * Cancellation allowed only for <b>Pending</b>.
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+
+      </ul>
+    {% else %}
+      <div class="empty-box">❌ No bookings found.</div>
+    {% endif %}
+  </div>
+
+  <!-- ✅ Search + Filter + Sort Script -->
+  <script>
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+    const serviceFilter = document.getElementById("serviceFilter");
+    const sortFilter = document.getElementById("sortFilter");
+    const countText = document.getElementById("countText");
+
+    function applyFilters(){
+      const query = (searchInput.value || "").trim().toLowerCase();
+      const status = statusFilter.value;
+      const service = serviceFilter.value;
+
+      const items = Array.from(document.querySelectorAll(".bookingItem"));
+
+      // Filter show/hide
+      let visibleCount = 0;
+      items.forEach(item => {
+        const itemStatus = item.dataset.status;
+        const itemService = item.dataset.service;
+        const itemText = item.dataset.text;
+
+        const okQuery = query === "" || itemText.includes(query);
+        const okStatus = status === "" || itemStatus === status;
+        const okService = service === "" || itemService === service;
+
+        if(okQuery && okStatus && okService){
+          item.style.display = "";
+          visibleCount++;
+        }else{
+          item.style.display = "none";
+        }
+      });
+
+      // Sorting (only visible items)
+      const list = document.getElementById("bookingList");
+      const visibleItems = items.filter(i => i.style.display !== "none");
+
+      visibleItems.sort((a,b)=>{
+        const aPrice = parseFloat(a.dataset.price || "0");
+        const bPrice = parseFloat(b.dataset.price || "0");
+
+        // For newest/oldest we don't have real datetime parsing (because your date is a string),
+        // so we'll keep their original order. If you store actual timestamp in DB,
+        // we can sort properly.
+        const mode = sortFilter.value;
+
+        if(mode === "price_high") return bPrice - aPrice;
+        if(mode === "price_low") return aPrice - bPrice;
+        return 0;
+      });
+
+      // Re-append sorted visible items (only affects visible part)
+      visibleItems.forEach(item => list.appendChild(item));
+
+      if(countText){
+        countText.textContent = `Showing ${visibleCount} booking(s)`;
+      }
+    }
+
+    // listeners
+    [searchInput, statusFilter, serviceFilter, sortFilter].forEach(el=>{
+      if(el) el.addEventListener("input", applyFilters);
+      if(el) el.addEventListener("change", applyFilters);
+    });
+
+    applyFilters();
+  </script>
+</body>
+</html>

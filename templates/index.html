@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Select Role</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 200%;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        padding: 20px;
+        animation: scrollBg 30s linear infinite;
+        z-index: -2;
+    }
+
+    .background img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+    @keyframes scrollBg {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-50%); }
+    }
+
+    .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(255,255,255,0.75);
+        z-index: -1;
+    }
+
+    .container {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 40px;
+    }
+
+    .card {
+        width: 240px;
+        height: 160px;
+        background: #1d1558;
+        color: white;
+        border-radius: 15px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    }
+
+    .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 18px 35px rgba(0,0,0,0.35);
+    }
+
+    .card h2 {
+        margin-bottom: 8px;
+    }
+
+    .card p {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+</style>
+</head>
+
+<body>
+
+<!-- Background -->
+<div class="background">
+    <img src="https://i.ibb.co/SjS7r1R/best-black-finish-coating-450x300.jpg">
+    <img src="https://i.ibb.co/5XnzhLpg/motorcycle-engine-rebuild-close-up-view-motorcycle-mechanic-repairing-gearbox-working-garage-mainten.jpg">
+    <img src="https://i.ibb.co/G3HDhkkv/bike-engine-repairing-services.jpg">
+    <img src="https://i.ibb.co/xWnjVS1/IMG-20251224-WA0005.jpg">
+    <img src="https://i.ibb.co/XfnDBDqR/Picture3-jpg.webp">
+    <img src="https://i.ibb.co/Y4ZDY7DY/Understanding-the-Basics-of-Bike-Periodic-Service.webp">
+    <img src="https://i.ibb.co/tTFgxh4W/Doorstep-bike-service-in-Bangalore-1024x578.webp">
+    <img src="https://i.ibb.co/fYM9D5dK/bike-service-in-faridabad.jpg">
+    <img src="https://i.ibb.co/dRLRG09/istockphoto-2085107255-170667a.webp">
+</div>
+
+<div class="overlay"></div>
+
+<!-- Foreground cards -->
+<div class="container">
+
+    <!-- CUSTOMER -->
+    <div class="card"
+    onclick="window.location.href='/signup'">
+        <h2>Customer</h2>
+        <p>Book mechanics and services</p>
+    </div>
+
+    <!-- MECHANIC -->
+    <div class="card" onclick="window.location.href='/signup_mechanic'">
+        <h2>Mechanic</h2>
+        <p>Offer services and manage bookings</p>
+    </div>
+
+</div>
+
+</body>
+</html>

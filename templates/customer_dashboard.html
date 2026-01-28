@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Dashboard</title>
+    <style>
+        body { font-family: Arial; background:#eef2f3; margin:0; }
+        .sidebar { width:220px; background:#1f4037; height:100vh; position:fixed; color:white; padding:20px; }
+        .content { margin-left:240px; padding:20px; }
+        h2 { color:#1f4037; }
+        table { width:100%; border-collapse:collapse; margin-top:10px; background:white; }
+        th, td { border:1px solid #ccc; padding:8px; text-align:center; }
+        th { background:#f5f5f5; }
+
+        .btn { padding:12px; width:100%; margin-bottom:10px; border:none; border-radius:5px; cursor:pointer; font-size:16px; }
+        .btn-book { background:#1f6feb; color:white; font-weight:bold; }
+        .btn-map { background:#3282b8; color:white; }
+        a.logout-text { color:white; text-decoration: underline; cursor:pointer; }
+
+        .cancel-btn { padding:6px 12px; background:#b82e2e; color:white; border:none; border-radius:4px; cursor:pointer; }
+        .cancel-btn:hover { opacity: 0.9; }
+
+        .review-box {
+            margin-top:8px;
+            padding:10px;
+            background:#f9f9f9;
+            border-radius:6px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h3>Welcome, {{ customer.name }}</h3>
+
+    {% if customer.photo %}
+    <img src="{{ url_for('static', filename='profile_pics/' + customer.photo) }}" width="80" style="border-radius:50%;">
+    {% endif %}
+
+    <button class="btn btn-book" onclick="openBooking()">📌 Book Mechanic</button>
+    <a href="/map"><button class="btn btn-map">🗺 View Nearby Mechanics</button></a>
+    <a href="/customer_bookings"><button class="btn btn-map">📋 Your Bookings</button></a>
+    <a href="/customer/profile" style="font-weight:bold;">👤 Edit Profile</a>
+
+    <br><br><br>
+    <a href="/logout" class="logout-text">Logout</a>
+</div>
+
+<div class="content">
+
+    <!-- ONLINE MECHANICS -->
+    <h2>Online Mechanics</h2>
+    {% if mechanics %}
+    <table>
+        <tr><th>Name</th><th>Phone</th><th>Action</th></tr>
+        {% for m in mechanics %}
+        <tr>
+            <td>{{ m.name }}</td>
+            <td>{{ m.phone }}</td>
+            <td>
+                <button onclick="openBookingWithMechanic('{{ m.id }}')" style="padding:6px 12px; background:#1f6feb; color:white; border:none; border-radius:4px;">
+                    Book
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>No mechanics online 🚫</p>
+    {% endif %}
+
+    <hr><br>
+
+    <!-- BOOKINGS -->
+    <h2>Your Bookings</h2>
+    {% if bookings %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Mechanic</th>
+            <th>Service</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+
+        {% for b in bookings %}
+        <tr>
+            <td>{{ b.id }}</td>
+            <td>{{ b.mechanic_name }}</td>
+            <td>{{ b.service }}</td>
+            <td>{{ b.status }}</td>
+            <td>{{ b.date }}</td>
+            <td>
+                {% if b.status == "Pending" %}
+                <form action="{{ url_for('cancel_booking_customer', booking_id=b.id) }}" method="POST" style="margin:0;">
+                    <button type="submit" class="cancel-btn">Cancel</button>
+                </form>
+                {% else %}
+                    <span style="color: gray;">-</span>
+                {% endif %}
+            </td>
+        </tr>
+
+        <!-- ⭐ REVIEW SECTION MOVED INSIDE LOOP -->
+        {% if b.status == "Completed" %}
+        <tr>
+            <td colspan="6">
+                <div class="review-box">
+                    <form action="/submit_review/{{ b.id }}" method="POST">
+                        <label><b>Rate Mechanic:</b></label><br>
+                        <select name="rating" required>
+                            <option value="">Select</option>
+                            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                            <option value="4">⭐⭐⭐⭐ Good</option>
+                            <option value="3">⭐⭐⭐ Average</option>
+                            <option value="2">⭐⭐ Poor</option>
+                            <option value="1">⭐ Very Bad</option>
+                        </select><br><br>
+
+                        <textarea name="review_text" placeholder="Write your review..." rows="2" style="width:60%;"></textarea><br><br>
+
+                        <button type="submit" style="padding:6px 14px; background:#1f6feb; color:white; border:none; border-radius:4px;">
+                            Submit Review
+                        </button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>No bookings yet</p>
+    {% endif %}
+</div>
+
+<!-- BOOKING POPUP -->
+<div id="overlay" style="display:none; position:fixed; background:rgba(0,0,0,0.4); top:0; left:0; width:100%; height:100%;"></div>
+
+<div id="popup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border-radius:10px; width:350px;">
+    <h3>Book Mechanic</h3>
+    <form method="POST" action="/book">
+        <label>Select Mechanic</label>
+        <select name="mechanic_id" id="mechanicSelect" required>
+            <option value="">-- Choose Mechanic --</option>
+            {% for m in mechanics %}
+            <option value="{{ m.id }}">{{ m.name }} - {{ m.phone }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <label>Select Service</label>
+        <select name="service" required>
+            <option>Puncture Fix</option>
+            <option>Chain Lubrication</option>
+            <option>Engine Oil Change</option>
+            <option>Bike Wash</option>
+            <option>Full Service</option>
+            <option>Electrical Repair</option>
+            <option>Breakdown Assistance</option>
+        </select>
+
+        <button type="submit" class="btn btn-book" style="margin-top:10px;">Confirm Booking</button>
+    </form>
+
+    <button onclick="closePopup()" style="margin-top:10px; background:#b82e2e; color:white; padding:10px; width:100%; border:none; border-radius:6px;">
+        Close
+    </button>
+</div>
+
+<script>
+function openBooking(){
+    document.getElementById("overlay").style.display = "block";
+    document.getElementById("popup").style.display = "block";
+}
+function openBookingWithMechanic(mid){
+    openBooking();
+    document.getElementById("mechanicSelect").value = mid;
+}
+function closePopup(){
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("popup").style.display = "none";
+}
+</script>
+
+</body>
+</html>

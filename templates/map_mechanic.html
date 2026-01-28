@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mechanic Requests</title>
+  <style>
+    table { width: 90%; margin: 20px auto; border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+    th { background: #1f4037; color: white; }
+  </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Service Requests</h2>
+<p style="text-align:center; font-weight: bold;">Welcome, {{ mechanic.name }}</p>
+<a href="/mechanic/dashboard/{{ mechanic.id }}" style="margin-left:20px;">⬅ Back</a>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Customer</th>
+    <th>Service</th>
+    <th>Status</th>
+    <th>Action</th>
+  </tr>
+
+  {% for r in requests %}
+  <tr>
+    <td>{{ r.id }}</td>
+    <td>{{ r.customer_name }}</td>
+    <td>{{ r.service }}</td>
+    <td>{{ r.status }}</td>
+    <td>
+      <a href="/mechanic/accept/{{ r.id }}/{{ mechanic.id }}">Accept</a> |
+      <a href="/mechanic/reject/{{ r.id }}/{{ mechanic.id }}">Reject</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% if requests|length == 0 %}
+<p style="text-align:center; color:gray;">No requests yet.</p>
+{% endif %}
+
+</body>
+</html>

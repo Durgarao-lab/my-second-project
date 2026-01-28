@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mechanic Requests</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; }
+    table { width: 90%; margin: 20px auto; border-collapse: collapse; background: white; }
+    th, td { border: 1px solid #ccc; padding: 12px; text-align: center; }
+    th { background: #1f4037; color: white; }
+    .back-btn { display: inline-block; margin: 20px; font-weight: bold; text-decoration: none; }
+    .call-btn { display:block; margin-top:6px; color:green; font-weight:bold; text-decoration:none; }
+    .no-phone { display:block; margin-top:6px; color:red; font-size:12px; }
+  </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Service Requests</h2>
+<p style="text-align:center; font-weight: bold;">Welcome, {{ mechanic.name }}</p>
+
+<a class="back-btn" href="/mechanic_dashboard">⬅ Back</a>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Customer</th>
+    <th>Service</th>
+    <th>Date</th>
+    <th>Status</th>
+    <th>Action</th>
+  </tr>
+
+  {% set count = 0 %}
+  {% for r in requests %}
+    {% if r.status == "Pending" %}
+    {% set count = count + 1 %}
+    <tr>
+      <td>{{ r.id }}</td>
+
+      <!-- ✅ CUSTOMER NAME + CALL BUTTON -->
+      <td>
+        {{ r.customer_name }}
+        {% if r.customer_phone %}
+          <a href="tel:{{ r.customer_phone }}" class="call-btn">📞 Call Customer</a>
+        {% else %}
+          <span class="no-phone">📞 Phone Not Provided</span>
+        {% endif %}
+      </td>
+
+      <td>{{ r.service }}</td>
+      <td>{{ r.date }}</td>
+      <td><span style="color:orange;">Pending</span></td>
+      <td>
+        <a href="/mechanic/accept/{{ r.id }}/{{ mechanic.id }}">Accept</a> |
+        <a href="/mechanic/reject/{{ r.id }}/{{ mechanic.id }}" style="color:red;">Reject</a>
+      </td>
+    </tr>
+    {% endif %}
+  {% endfor %}
+</table>
+
+{% if count == 0 %}
+<p style="text-align:center; color:gray;">No Pending Service Requests 🚫</p>
+{% endif %}
+
+</body>
+</html>

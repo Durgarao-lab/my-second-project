@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Bookings</title>
+  <style>
+    body { font-family:Arial; background:#e7f7ed; padding:30px; }
+    h2 { color:#1f4037; }
+    ul { background:white; padding:20px; border-radius:10px; list-style:none; }
+    li { padding:10px; border-bottom:1px solid #ddd; }
+  </style>
+</head>
+<body>
+
+<h2>My Bookings</h2>
+
+{% if bookings|length == 0 %}
+<p>No bookings yet.</p>
+{% else %}
+<ul>
+  {% for b in bookings %}
+  <li>
+    Service: <b>{{ b.service }}</b> —
+    Status: <b>{{ b.status }}</b>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+<br>
+{% if bookings|length > 0 %}
+<button onclick="window.location.href='/mechanic/dashboard/{{ bookings[0].mechanic_id }}'">
+  ⬅ Back to Dashboard
+</button>
+{% else %}
+<button onclick="window.location.href='/mechanic_login'">
+  ⬅ Back to Dashboard
+</button>
+{% endif %}
+
+</body>
+</html>

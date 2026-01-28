@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Customer Signup</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: linear-gradient(135deg,#1f4037,#1b15c0ff);
+           height: 100vh; display: flex; justify-content: center; align-items: center; margin:0; }
+    .signup-box { background:white; padding:30px; width:350px; border-radius:10px;
+                  box-shadow:0 10px 30px rgba(42,148,181,0.3); }
+    h2 { text-align:center; }
+    input, button { width:100%; padding:10px; margin-top:10px; font-size:15px; }
+    button { background:#232526; color:white; border:none; cursor:pointer; border-radius:5px; }
+    button:hover { background:black; }
+    .otp-box { display:none; }
+    .login-link { text-align:center; margin-top:15px; }
+    .login-link a { text-decoration:none; color:#232526; font-weight:bold; }
+  </style>
+</head>
+<body>
+
+<div class="signup-box">
+  <h2>Customer Signup</h2>
+
+  <!-- Form must call JS validation -->
+  <form  method="POST"  action="/signup" onsubmit="return checkBeforeSignup()">
+    <input type="text" name="name" id="name" placeholder="Full Name" required>
+    <input type="email" name="email" id="email" placeholder="Email" required>
+
+    <button type="button" onclick="sendOTP()">Verify Email with OTP</button>
+
+    <!-- OTP box appears only after OTP sent -->
+    <div id="otpBox" class="otp-box">
+      <input type="text" id="otp" placeholder="Enter OTP">
+      <button type="button" onclick="verifyOTP()">Verify OTP</button>
+    </div>
+
+    <input type="text" id="phoneNumber" name="phone" placeholder="Phone Number (+91xxxxxxxxxx)" required>
+    <input type="password" name="password" placeholder="Password" required>
+
+    <button type="submit">Signup</button>
+  </form>
+
+  <div class="login-link">
+    Already have an account? <a href="/login">Login</a>
+  </div>
+</div>
+
+<script>
+let emailVerified = false;
+
+// SEND OTP
+async function sendOTP() {
+    let email = document.getElementById("email").value;
+    if (!email) return alert("Enter email first!");
+
+    const res = await fetch("/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `email=${email}`
+    });
+
+    const text = await res.text();
+    if (text.includes("OTP Sent")) {
+        alert("OTP Sent to Email 📩");
+        document.getElementById("otpBox").style.display = "block";   // show OTP box
+    } else {
+        alert("❌ Failed to send OTP");
+    }
+}
+
+// VERIFY OTP
+async function verifyOTP() {
+    let email = document.getElementById("email").value;
+    let otp = document.getElementById("otp").value;
+
+    const res = await fetch("/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+            email: email,
+            otp: otp
+        })
+    });
+
+    const text = await res.text();
+    if (text.includes("OTP verified")) {
+        alert("Verified ✅");
+        emailVerified = true;
+    } else {
+        alert("❌ Wrong OTP");
+    }
+}
+
+// FINAL SUBMIT BLOCKER
+function checkBeforeSignup() {
+    if (!emailVerified) {
+        alert("⚠ Please verify OTP before Signup!");
+        return false;
+    }
+    return true;
+}
+</script>
+
+</body>
+</html>

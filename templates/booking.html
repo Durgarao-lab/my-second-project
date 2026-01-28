@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Book a Service</title>
+<style>
+body { font-family: Arial; background:#eef2f3; padding:30px; }
+.card { background:white; padding:25px; width:380px; margin:auto; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,.2); }
+input,select,button { width:100%; padding:10px; margin-top:10px; border-radius:6px; border:1px solid #ccc; }
+button { background:#1f4037; color:white; cursor:pointer; }
+button:hover { background:#16322b; }
+.price-box { margin-top:15px; font-size:18px; font-weight:bold; color:#0b3a27; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Book Mechanic Service</h2>
+
+  <!-- FORM SENDS DATA TO BACKEND -->
+  <form action="/book" method="GET">
+
+    <!-- Hidden customer ID -->
+    <input type="hidden" name="customer_id" value="{{ customer.id }}">
+
+    <label>Select Mechanic</label>
+    <select name="mechanic_id" required>
+      {% for m in mechanics %}
+      <option value="{{ m.id }}">{{ m.name }} ({{ "Online" if m.is_online else "Offline" }})</option>
+      {% endfor %}
+    </select>
+
+    <label>Select Service</label>
+    <select name="service" id="service" onchange="updatePrice()" required>
+      <option value="">-- Select --</option>
+      <option>Chain Lubrication</option>
+      <option>Puncture Fix</option>
+      <option>Engine Oil Change</option>
+      <option>Bike Wash</option>
+      <option>Full Service</option>
+    </select>
+
+    <p id="priceDisplay" class="price-box">Price: ₹0</p>
+
+    <button type="submit">Confirm Booking</button>
+  </form>
+</div>
+
+<script>
+const prices = {
+  "Chain Lubrication": 100,
+  "Puncture Fix": 150,
+  "Engine Oil Change": 350,
+  "Bike Wash": 120,
+  "Full Service": 700
+};
+
+function updatePrice() {
+  let service = document.getElementById("service").value;
+  let price = prices[service] || 0;
+  document.getElementById("priceDisplay").innerHTML = "Price: ₹" + price;
+}
+</script>
+
+</body>
+</html>

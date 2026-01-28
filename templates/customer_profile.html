@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Profile</title>
+    <style>
+        body { font-family: Arial; background: #f4f4f4; }
+        .box {
+            width: 400px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px;
+            width: 100%;
+            background: #1f4037;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Update Profile</h2>
+
+    <!-- 👤 Profile Photo -->
+    {% if customer.photo %}
+        <img src="{{ url_for('static', filename='profile_pics/' + customer.photo) }}">
+    {% else %}
+        <img src="https://via.placeholder.com/120">
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        <input type="text" name="name" value="{{ customer.name }}" required>
+        <input type="email" name="email" value="{{ customer.email }}" required>
+        <input type="text" name="phone" value="{{ customer.phone or '' }}" placeholder="Enter Phone Number" required>
+
+        <input type="file" name="photo" accept="image/*">
+
+        <button type="submit">Save Changes</button>
+    </form>
+</div>
+
+</body>
+</html>

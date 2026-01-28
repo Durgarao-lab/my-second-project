@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Services Provided By Mechanic</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0a00ca;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: #24186d;
+      color: rgba(255, 255, 255, 0.97);
+      padding: 15px 25px;
+    }
+
+    .container {
+      padding: 30px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    .service-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .service-card {
+      background: rgb(244, 245, 246);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 8px 18px rgba(14, 14, 14, 0.1);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .service-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .service-card h3 {
+      margin-top: 0;
+      color: #010101;
+    }
+
+    .service-card p {
+      font-size: 14px;
+      color: #080808;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h2 id="vehicleTitle"></h2>
+</div>
+
+<!-- SERVICES -->
+<div class="container">
+  <div class="service-list">
+
+    <div class="service-card" onclick="book('Routine Maintenance & Inspection')">
+      <h3>Routine Maintenance & Inspection</h3>
+      <p>
+        Complete inspection of your vehicle including
+        overall health check and basic maintenance.
+      </p>
+    </div>
+
+    <div class="service-card" onclick="book('Breakdown Assistance')">
+      <h3>Breakdown Assistance</h3>
+      <p>
+        Inspection of braking system, clutch system,
+        and on-road breakdown support.
+      </p>
+    </div>
+
+    <div class="service-card" onclick="book('Engine Repair')">
+      <h3>Engine Repair</h3>
+      <p>
+        Full engine diagnostics and repair including
+        internal mechanism inspection.
+      </p>
+    </div>
+
+    <div class="service-card" onclick="book('Electrical Repair')">
+      <h3>Electrical Repair</h3>
+      <p>
+        Battery check, wiring inspection,
+        lighting system repair.
+      </p>
+    </div>
+
+    <div class="service-card" onclick="book('Periodic Maintenance')">
+      <h3>Periodic Maintenance</h3>
+      <p>
+        Complete vehicle inspection including
+        mechanical, electrical, and safety systems.
+      </p>
+    </div>
+
+    <div class="service-card" onclick="book('Oil Change')">
+      <h3>Oil Change</h3>
+      <p>
+        Engine oil and chain oil quality check
+        and replacement if required.
+      </p>
+    </div>
+
+    <div class="service-card" onclick="book('Chain Repair')">
+      <h3>Chain Repair</h3>
+      <p>
+        Chain system inspection, lubrication,
+        adjustment, and repair.
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const vehicleType = localStorage.getItem("vehicleType");
+
+  document.getElementById("vehicleTitle").innerText =
+    vehicleType + " Services Provided by Mechanic";
+
+  function book(serviceName) {
+    localStorage.setItem("selectedService", serviceName);
+    window.location.href = "/booking";
+  }
+</script>
+
+</body>
+</html>
